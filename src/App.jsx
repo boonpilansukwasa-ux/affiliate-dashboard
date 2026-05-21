@@ -764,7 +764,90 @@ export default function App() {
     } catch (e) { alert('Error: ' + e.message); } 
     finally { setUploading(false); }
   };
+  const handleDeleteCurrentMonth = async () => {
+    if (!checkPermission('delete')) return;
+    if (!db) return;
 
+    if (selectedMonth === 'All' && (!startDate || !endDate)) {
+      alert('กรุณาเลือกเดือน หรือเลือกช่วงวันที่ก่อนลบข้อมูล');
+      return;
+    }
+
+    const monthLabel = selectedMonth !== 'All'
+      ? selectedMonth
+      : `${startDate} ถึง ${endDate}`;
+
+    const ok = window.confirm(
+      `ยืนยันลบข้อมูลของแบรนด์ ${selectedBrand} ช่วง ${monthLabel} ?\n\nการลบนี้ไม่สามารถกู้คืนได้`
+    );
+
+    if (!ok) return;
+
+    setUploading(true);
+
+    try {
+      const salesToDelete = filteredSales;
+      const clicksToDelete = filteredClicks;
+
+      const allDocs = [
+        ...salesToDelete.map(item => ({
+          type: 'sale',
+          id: item.id
+        })),
+        ...clicksToDelete.map(item => ({
+          type: 'click',
+          id: item.id
+        }))
+      ];
+
+      if (allDocs.length === 0) {
+        alert('ไม่พบข้อมูลในเดือน/ช่วงวันที่ที่เลือก');
+        setUploading(false);
+        return;
+      }
+
+      const batchSize = 500;
+
+      for (let i = 0; i < allDocs.length; i += batchSize) {
+        const batch = writeBatch(db);
+
+        allDocs.slice(i, i + batchSize).forEach(item => {
+          const collectionName =
+            item.type === 'sale'
+              ? 'affiliate_sales'
+              : 'affiliate_clicks';
+
+          batch.delete(
+            doc(
+              db,
+              'artifacts',
+              appId,
+              'public',
+              'data',
+              collectionName,
+              item.id
+            )
+          );
+        });
+
+        await batch.commit();
+      }
+
+      setSalesData(prev =>
+        prev.filter(item => !salesToDelete.some(d => d.id === item.id))
+      );
+
+      setClickData(prev =>
+        prev.filter(item => !clicksToDelete.some(d => d.id === item.id))
+      );
+
+      alert(`ลบข้อมูลสำเร็จ ${allDocs.length.toLocaleString()} รายการ`);
+    } catch (e) {
+      alert('ลบข้อมูลไม่สำเร็จ: ' + e.message);
+    } finally {
+      setUploading(false);
+    }
+  };
   const requestDelete = () => {
       if (checkPermission('delete')) {
           setShowDeleteModal(true);
