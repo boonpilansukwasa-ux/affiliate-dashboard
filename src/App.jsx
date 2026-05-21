@@ -622,7 +622,7 @@ export default function App() {
                  return;
               }
 
-              const batchSize = 250; 
+              const batchSize = 500; 
               let count = 0;
               const getLatestDate = (timeIdx) => {
                   let maxTime = 0;
@@ -674,7 +674,7 @@ export default function App() {
                           }
                       });
                       await batch.commit();
-                      await new Promise(r => setTimeout(r, 50));
+                      await new Promise(r => setTimeout(r, 5));
                   }
               } else {
                   const idxMap = {
@@ -730,7 +730,7 @@ export default function App() {
                           }
                       });
                       await batch.commit();
-                      await new Promise(r => setTimeout(r, 50));
+                      await new Promise(r => setTimeout(r, 5));
                   }
               }
               alert(`นำเข้าข้อมูลสู่ระบบสาธารณะสำเร็จ: ${count} รายการ (Admin: ${adminUser.username})`);
@@ -756,7 +756,7 @@ export default function App() {
             const batch = writeBatch(db);
             docs.slice(i, i + batchSize).forEach(d => batch.delete(d.ref));
             await batch.commit();
-            await new Promise(r => setTimeout(r, 50));
+            await new Promise(r => setTimeout(r, 5));
         }
         setSalesData([]);
         setClickData([]);
