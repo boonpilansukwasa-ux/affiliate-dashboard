@@ -1228,7 +1228,14 @@ export default function App() {
             <button onClick={handleGlobalLogout} className="p-2 text-slate-400 hover:text-red-500 hover:bg-slate-50 rounded mr-1" title="ออกจากระบบ (Dashboard)"><LogOut size={18} /></button>
 
             <button onClick={requestDelete} className="p-2 text-red-500 hover:bg-red-50 rounded" title="ลบข้อมูลทั้งหมด (Admin Only)"><Trash2 size={18} /></button>
-            
+                        <button
+              onClick={handleDeleteCurrentMonth}
+              disabled={uploading}
+              className="px-3 py-2 text-xs bg-red-50 text-red-600 rounded-lg hover:bg-red-100 border border-red-200 disabled:opacity-50"
+              title="ลบข้อมูลเฉพาะเดือน/ช่วงวันที่ที่เลือก"
+            >
+              ลบเดือนที่เลือก
+            </button>
             <button onClick={handleResetFilters} className="p-2 text-slate-500 hover:bg-slate-100 rounded-lg" title="รีเซ็ตตัวกรอง"><RefreshCw size={18} /></button>
 
             <label className={`flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg cursor-pointer hover:bg-blue-700 transition-colors shadow-blue-200 shadow-md ${uploading ? 'opacity-50' : ''}`}>
