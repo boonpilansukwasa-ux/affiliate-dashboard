@@ -4,4 +4,6 @@
 
 body {
   margin: 0;
+  background: #f8fafc;
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
